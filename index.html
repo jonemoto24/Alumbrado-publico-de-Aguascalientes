@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alumbrado público de Aguascalientes</title>
@@ -130,8 +130,8 @@
       "Apellido(s)": document.getElementById("apellidos").value,
       "Teléfono": document.getElementById("Telefono").value,
       "Ubicación": document.getElementById("ubicacion").value,
-      "Calle": document.getElementById("calle").value,
-      "Entre calles": document.getElementById("entreCalles").value,
+      "Calle principal": document.getElementById("calle").value,
+      "Entre que calles": document.getElementById("entreCalles").value,
       "Código Postal": document.getElementById("CodigoPostal").value,
       "¿Hay varias luminarias dañadas?": document.getElementById("Pregunta").value,
       "Cantidad de luminarias": document.getElementById("Cantidad")?.value || "N/A",
@@ -151,15 +151,43 @@
     return faltantes;
   }
 
-  function generarExcel(datos) {
-    const hoja = XLSX.utils.json_to_sheet([datos]);
-    hoja['!cols'] = Object.keys(datos).map(key => ({
-      wch: Math.max(key.length, datos[key]?.length || 10)
-    }));
-    const libro = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(libro, hoja, "Reporte");
-    XLSX.writeFile(libro, `reporte_iluminacion_${datos.Folio}.xlsx`);
-  }
+  function generarExcelBlob(datos) {
+  const hoja = XLSX.utils.json_to_sheet([datos]);
+  const libro = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(libro, hoja, "Reporte");
+  const excelBuffer = XLSX.write(libro, { bookType: "xlsx", type: "array" });
+  return new Blob([excelBuffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  });
+}
+
+function subirAAppsScript(blob, nombreArchivo) {
+  const reader = new FileReader();
+  reader.onload = function () {
+    const base64 = reader.result.split(',')[1];
+    const formData = new URLSearchParams();
+    formData.append("archivo", base64);
+    formData.append("nombre", nombreArchivo);
+
+    fetch("https://script.google.com/macros/s/AKfycbwGb23Iamb8Xd4eqJdTHSitNJF3hGRModqLq22jGpXLNwa1i6vmm5ihd8ocDt0xicyY/exec", {
+      method: "POST",
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("Archivo subido a Drive correctamente.");
+      } else {
+        alert("Error al subir: " + data.error);
+      }
+    })
+    .catch(err => {
+      console.error("Error en la subida:", err);
+      alert("No se pudo subir el archivo.");
+    });
+  };
+  reader.readAsDataURL(blob);
+}
 
   document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("reporteForm").addEventListener("submit", function (e) {
@@ -177,12 +205,14 @@
       const datosFormulario = obtenerDatosFormulario(folio, fechaHoraEnvio, turno);
 
       try {
-        generarExcel(datosFormulario);
-        alert(`Reporte generado con folio ${folio} y turno ${turno}`);
-      } catch (error) {
-        console.error("Error al generar el Excel:", error);
-        alert("Hubo un problema al generar el archivo. Verifica los datos e intenta nuevamente.");
-      }
+  const blob = generarExcelBlob(datosFormulario);
+  const nombreArchivo = `reporte_iluminacion_${folio}.xlsx`;
+  subirAAppsScript(blob, nombreArchivo);
+  alert(`Reporte generado con folio ${folio} y turno ${turno}`);
+} catch (error) {
+  console.error("Error al generar o subir el Excel:", error);
+  alert("Hubo un problema. Verifica los datos e intenta nuevamente.");
+}
     });
   });
 </script>
@@ -229,7 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
       cpList.appendChild(option);
       document.getElementById('CodigoPostal').value = cp;
     }
-  });
+});
 });
 
 async function cargarFallas() {

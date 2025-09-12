@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-    
+  
     <header>
         <h1>Alumbrado Público de Aguascalientes</h1>
         <img src="Aguascalientes.png" alt="Logo" class="header-logo">
@@ -215,7 +215,7 @@ function subirAAppsScript(blob, nombreArchivo) {
 
       try {
   const blob = generarExcelBlob(datosFormulario);
-  const nombreArchivo = `reporte_iluminacion_${folio}.xlsx`;
+  const nombreArchivo = `REPORTE_${folio}_${datosFormulario["Ubicación"]}.xlsx`;
   subirAAppsScript(blob, nombreArchivo);
   alert(`Reporte generado con folio ${folio} y turno ${turno}`);
 } catch (error) {

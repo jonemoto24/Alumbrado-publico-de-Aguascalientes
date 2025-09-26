@@ -91,7 +91,7 @@
     </select>
 
     <label for="descripcion">Descripción de la falla:</label>
-    <textarea id="descripcion" name="descripcion" required></textarea>
+    <textarea id="descripcion" name="descripcion"></textarea>
 
   </fieldset>
 
@@ -154,7 +154,7 @@
   function validarCamposObligatorios() {
     const campos = [
       "nombres", "apellidos", "Telefono", "ubicacion", "calle", "entreCalles",
-      "CodigoPostal", "Pregunta", "Cantidad", "Tiempo", "PosibleFalla", "descripcion"
+      "CodigoPostal", "Pregunta", "Cantidad", "Tiempo", "PosibleFalla"
     ];
     const faltantes = campos.filter(id => !document.getElementById(id)?.value.trim());
     return faltantes;

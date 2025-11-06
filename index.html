@@ -7,6 +7,9 @@
     <meta name=" keywords" content="Alumbrado público, Aguascalientes, Reporte, Ciudadano">
     <meta name=" robots" content="index, follow">
     <meta name=" author" content="Gobierno de Aguascalientes">
+    <link rel="icon" type="image/x-icon" href="Aguascalientes.png">
+    <link rel="icon" href="/icono-32x32.png" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" href="/icono-180x180.png">
     
     <title>Alumbrado público de Aguascalientes</title>
     <link rel="stylesheet" href="styles.css">
@@ -51,7 +54,7 @@
     <label for="entreCalles">Entre qué calles:</label>
     <input list="entreCalles" id="entreCalles" name="entreCalles" required>
 
-    <label for="CodigoPostal">Código Postal:</label>
+    <label for="CodigoPostal">Código Postal: (Opcional)</label>
 <input list="codigosPostales" id="CodigoPostal" name="CodigoPostal" required readonly>
 <datalist id="codigosPostales"></datalist>
 
@@ -95,7 +98,7 @@
       <option value="Desconocida">Desconocida</option>
     </select>
 
-    <label for="descripcion">Descripción de la falla:</label>
+    <label for="descripcion">Descripción de la falla: (Opcional)</label>
     <textarea id="descripcion" name="descripcion"></textarea>
 
   </fieldset>
@@ -159,7 +162,7 @@
   function validarCamposObligatorios() {
     const campos = [
       "nombres", "apellidos", "Telefono", "ubicacion", "calle", "entreCalles",
-      "CodigoPostal", "Pregunta", "Cantidad", "Tiempo", "PosibleFalla"
+      "Pregunta", "Cantidad", "Tiempo", "PosibleFalla"
     ];
     const faltantes = campos.filter(id => !document.getElementById(id)?.value.trim());
     return faltantes;

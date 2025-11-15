@@ -1,5 +1,9 @@
 [
-  { "matricula": "12345", "clave": "abcde" },
-  { "matricula": "67890", "clave": "xyz123" },
-  { "matricula": "Neftali", "clave": "12345" }
+  { "matricula": "Lily", "clave": "123" },
+  { "matricula": "Erick", "clave": "456" },
+  { "matricula": "Neftali", "clave": "12345" },
+  { "matricula": "Mili", "clave": "789"},
+  { "matricula": "Alison", "clave": "012"},
+  { "matricula": "Alexis", "clave": "741"}
+
 ]

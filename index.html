@@ -10,10 +10,13 @@
     <link rel="icon" type="image/x-icon" href="Secretaria.jpg">
     <link rel="icon" href="/icono-32x32.png" sizes="32x32" type="image/jpg">
     <link rel="apple-touch-icon" href="/icono-180x180.png">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <title>Alumbrado público de Aguascalientes</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="validacionAcceso.js"></script>
 </head>
 <body>
   
@@ -107,12 +110,35 @@
 
       </form>
 
+<div style="text-align:center; margin-top: 20px;">
+  <button onclick="mostrarMapa()">Acceder al mapa de luminarias</button>
+</div>  
+
       <section class="imagen-add">
   <img src="Alumbrado.jpg" alt="Imagen de Alumbrado" class="imagen-add-logo">
 </section>
+
         </section>
-        
-        
+<section id="mapa" style="display:none;">
+  <div style="text-align:center; margin:20px;">
+    <h2>Acceso al mapa</h2>
+    <input type="text" id="matricula" placeholder="Matrícula" />
+    <input type="password" id="clave" placeholder="Clave" />
+    <br />
+    <button onclick="iniciar()">Entrar</button>
+    <div id="mensaje" style="color:red; font-weight:bold;"></div>
+  </div>
+
+  <div class="controls" style="text-align:center; margin:20px; display:none;" id="botonesMapa">
+    <button onclick="cargarLibreria('luminariasNorte.json')">Sector Norte</button>
+    <button onclick="cargarLibreria('luminariasOriente.json')">Sector Oriente</button>
+    <button onclick="cargarLibreria('luminariasSur.json')">Sector Sur</button>
+    <button onclick="limpiarCircuitos()">Borrar Circuitos</button>
+  </div>
+
+  <div id="map" style="height:90vh; width:100%; display:none;"></div>
+</section>
+
     </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -293,6 +319,142 @@ async function cargarFallas() {
 document.addEventListener("DOMContentLoaded", () => {
   cargarFallas();
 });
+
+let listaAutorizados = [];
+let datosCargados = false;
+let map, grupoCentros, grupoCircuitos;
+
+const iconoNegro = L.icon({
+  iconUrl: 'https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-black.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+});
+
+const iconoAzul = L.icon({
+  iconUrl: 'https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-blue.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+});
+
+// Cargar lista de autorizados
+fetch('Acceso.json')
+  .then(res => res.json())
+  .then(data => {
+    listaAutorizados = data;
+    datosCargados = true;
+  })
+  .catch(err => console.error("Error al cargar autorizados:", err));
+
+// Mostrar sección del mapa
+function mostrarMapa() {
+  document.getElementById('mapa').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('mapa').style.display = 'block';
+}
+
+// Validar acceso
+function validarAcceso() {
+  if (!datosCargados) {
+    document.getElementById('mensaje').textContent = "Datos aún no cargados. Intenta en unos segundos.";
+    return false;
+  }
+
+  const matricula = document.getElementById('matricula').value.trim().toLowerCase();
+  const clave = document.getElementById('clave').value.trim();
+
+  return listaAutorizados.some(p =>
+    p.matricula.toLowerCase() === matricula && p.clave === clave
+  );
+}
+
+// Iniciar mapa si acceso es válido
+function iniciar() {
+  const mensaje = document.getElementById('mensaje');
+  mensaje.textContent = '';
+
+  if (validarAcceso()) {
+    document.getElementById('botonesMapa').style.display = 'block';
+    document.getElementById('map').style.display = 'block';
+    inicializarMapa();
+  } else {
+    mensaje.textContent = "Acceso denegado. Verifica tus datos.";
+  }
+}
+
+// Inicializar mapa
+function inicializarMapa() {
+  if (map) return; // evita reinicializar
+
+  map = L.map('map').setView([21.8784, -102.2957], 13);
+
+  L.tileLayer('https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}.png?key=TxkoiifB5tCb5afunfk2', {
+    attribution: '&copy; <a href="https://www.maptiler.com/">MapTiler</a>',
+    tileSize: 512,
+    zoomOffset: -1,
+    maxZoom: 25
+  }).addTo(map);
+
+  grupoCentros = L.layerGroup().addTo(map);
+  grupoCircuitos = L.layerGroup().addTo(map);
+}
+
+// Cargar centros de carga
+function cargarLibreria(archivo) {
+  if (!grupoCentros || !grupoCircuitos) {
+    alert("El mapa aún no está listo. Accede primero con tu matrícula y clave.");
+    return;
+  }
+
+  fetch(archivo)
+    .then(res => res.json())
+    .then(sector => {
+      grupoCentros.clearLayers();
+      grupoCircuitos.clearLayers();
+
+      sector.centros.forEach(c => {
+        const marker = L.marker([c.lat, c.lng], { icon: iconoNegro }).addTo(grupoCentros);
+        marker.bindPopup(`
+          <b>${c.nombre}</b><br>
+          <button onclick="cargarCircuitos('${c.archivo}', '${c.nombre}')">Ver circuito</button>
+        `);
+      });
+    })
+    .catch(err => alert("Error al cargar la librería: " + err));
+}
+
+// Cargar luminarias del circuito
+function cargarCircuitos(archivoCircuitos, centroNombre) {
+  fetch(archivoCircuitos)
+    .then(res => res.json())
+    .then(circuitos => {
+      grupoCircuitos.clearLayers();
+
+      const circuitosFiltrados = circuitos.circuitos.filter(c => c.centro === centroNombre);
+
+      circuitosFiltrados.forEach(c => {
+        c.puntos.forEach(p => {
+          L.marker([p.lat, p.lng], { icon: iconoAzul })
+            .bindPopup(`<b>${p.nombre}</b><br>${c.nombre}`)
+            .addTo(grupoCircuitos);
+        });
+
+        const coords = c.puntos.map(p => [p.lat, p.lng]);
+        L.polyline(coords, { color: 'blue', weight: 3 }).addTo(grupoCircuitos);
+      });
+    })
+    .catch(err => alert("Error al cargar circuitos: " + err));
+}
+
+// Limpiar luminarias
+function limpiarCircuitos() {
+  grupoCircuitos.clearLayers();
+}
+
+
 </script>
 </body>
 </html>
+

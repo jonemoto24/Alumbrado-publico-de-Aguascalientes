@@ -180,6 +180,7 @@
       "Cantidad de luminarias": document.getElementById("Cantidad")?.value || "N/A",
       "Tiempo dañadas": document.getElementById("Tiempo")?.value || "N/A",
       "Tipo de falla": document.getElementById("PosibleFalla").value,
+      "Estado de la luminaria": document.getElementById("ES").value,
       "Descripción del problema": document.getElementById("descripcion").value,
       "Turno asignado": turno,
     };
@@ -249,7 +250,7 @@ function subirAAppsScript(blob, nombreArchivo) {
 
       try {
   const blob = generarExcelBlob(datosFormulario);
-  const nombreArchivo = `REPORTE_${datosFormulario["Ubicación"]}_${datosFormulario["Tipo de falla"]}.xlsx`;
+  const nombreArchivo = `REPORTE_${datosFormulario["Ubicación"]}_${datosFormulario["Tipo de falla"]}_${datosFormulario["Estado de la luminaria"]}.xlsx`;
   subirAAppsScript(blob, nombreArchivo);
   alert(`Reporte generado para el turno ${turno}`);
 } catch (error) {

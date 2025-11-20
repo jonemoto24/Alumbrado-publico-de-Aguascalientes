@@ -250,7 +250,7 @@ function subirAAppsScript(blob, nombreArchivo) {
 
       try {
   const blob = generarExcelBlob(datosFormulario);
-  const nombreArchivo = `REPORTE_${datosFormulario["Ubicación"]}_${datosFormulario["Tipo de falla"]}_${datosFormulario["Estado de la luminaria"]}.xlsx`;
+  const nombreArchivo = `REPORTE_${datosFormulario["Ubicación"]}_${datosFormulario["Calle principal"]}_${datosFormulario["Tipo de falla"]}_${datosFormulario["Estado de la luminaria"]}.xlsx`;
   subirAAppsScript(blob, nombreArchivo);
   alert(`Reporte generado para el turno ${turno}`);
 } catch (error) {

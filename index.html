@@ -111,7 +111,8 @@
       </form>
 
 <div style="text-align:center; margin-top: 20px;">
-  <button onclick="mostrarMapa()">Acceder al mapa de luminarias</button>
+  <button class="boton-rojo" onclick="mostrarMapa()">Acceder al mapa de luminarias</button>
+</div id ="Información del reporte" style="color:red; font-weight:bold; text-align:center; margin-top:20px;"><div>
 </div>  
 
       <section class="imagen-add">
@@ -120,20 +121,19 @@
 
         </section>
 <section id="mapa" style="display:none;">
-  <div style="text-align:center; margin:20px;">
-    <h2>Acceso al mapa</h2>
-    <input type="text" id="matricula" placeholder="Matrícula" />
-    <input type="password" id="clave" placeholder="Clave" />
-    <br />
-    <button onclick="iniciar()">Entrar</button>
-    <div id="mensaje" style="color:red; font-weight:bold;"></div>
+  <div class="mapa-login-container">
+    <h2><img src="mundo.png" alt="Mapa" class="map-icon"> Acceso al mapa</h2>
+    <input type="text" id="matricula" placeholder="Matrícula" class="mapa-input" />
+    <input type="password" id="clave" placeholder="Clave" class="mapa-input" />
+    <button onclick="iniciar()" class="mapa-boton">Entrar</button>
+    <div id="mensaje" class="mapa-error"></div>
   </div>
 
-  <div class="controls" style="text-align:center; margin:20px; display:none;" id="botonesMapa">
-    <button onclick="cargarLibreria('luminariasNorte.json')">Sector Norte</button>
-    <button onclick="cargarLibreria('luminariasOriente.json')">Sector Oriente</button>
-    <button onclick="cargarLibreria('luminariasSur.json')">Sector Sur</button>
-    <button onclick="limpiarCircuitos()">Borrar Circuitos</button>
+  <div class="controls" id="botonesMapa" style="display:none;">
+    <button class="sector-boton" onclick="cargarLibreria('luminariasNorte.json')">Sector Norte</button>
+    <button class="sector-boton" onclick="cargarLibreria('luminariasOriente.json')">Sector Oriente</button>
+    <button class="sector-boton" onclick="cargarLibreria('luminariasSur.json')">Sector Sur</button>
+    <button class="sector-boton borrar" onclick="limpiarCircuitos()">Borrar Circuitos</button>
   </div>
 
   <div id="map" style="height:90vh; width:100%; display:none;"></div>

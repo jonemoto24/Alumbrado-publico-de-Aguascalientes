@@ -113,7 +113,7 @@ form button {
 }
 
 form button:hover {
-  background-color: #0e1f9c;
+  background-color: #320000;
 }
 
 /* Chat */
@@ -270,4 +270,34 @@ form button:hover {
 
 .sector-boton.borrar:hover {
   background-color: #616161;
+}
+
+#btnFolio {
+  display: block;            
+  margin: 0 auto;             
+  background-color: red;     
+  color: white;               
+  border: none;
+  padding: 12px 25px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#folioForm {
+  display: none;
+  margin-top: 20px;
+  text-align: center;
+}
+
+#folioInput {
+  padding: 8px;
+  width: 200px;
+  margin-bottom: 10px;
+}
+
+#btnEnviar {
+  padding: 8px 16px;
+  margin-left: 10px;
+  cursor: pointer;
 }

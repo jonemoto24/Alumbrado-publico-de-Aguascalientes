@@ -3,10 +3,10 @@
 <head> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name=" descripcion" content="Reporte de alumbrado público de Aguascalientes">
-    <meta name=" keywords" content="Alumbrado público, Aguascalientes, Reporte, Ciudadano">
-    <meta name=" robots" content="index, follow">
-    <meta name=" author" content="Gobierno de Aguascalientes">
+    <meta name="description" content="Reporte de alumbrado público de Aguascalientes">
+    <meta name="keywords" content="Alumbrado público, Aguascalientes, Reporte, Ciudadano">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Gobierno de Aguascalientes">
     <link rel="icon" type="image/x-icon" href="Secretaria.jpg">
     <link rel="icon" href="/icono-32x32.png" sizes="32x32" type="image/jpg">
     <link rel="apple-touch-icon" href="/icono-180x180.png">
@@ -32,92 +32,128 @@
 
         <section id="Información del reporte">
             <form id="reporteForm">
-  <fieldset>
-    <legend>Datos del ciudadano</legend>
-    <label for="nombres">Nombres:</label>
-    <input type="text" id="nombres" name="nombres" required>
+                <fieldset>
+                    <legend>Datos del ciudadano</legend>
+                    <label for="nombres">Nombres:</label>
+                    <input type="text" id="nombres" name="nombres" required>
 
-    <label for="apellidos">Apellidos:</label>
-    <input type="text" id="apellidos" name="apellidos" required>
+                    <label for="apellidos">Apellidos:</label>
+                    <input type="text" id="apellidos" name="apellidos" required>
 
-    <label for="Telefono">Teléfono:</label>
-    <input type="tel" id="Telefono" name="Telefono" required>
-  </fieldset>
+                    <label for="Telefono">Teléfono:</label>
+                    <input type="tel" id="Telefono" name="Telefono" required>
+                </fieldset>
 
-  <fieldset>
-    <legend>Ubicación del reporte</legend>
-    <label for="ubicacion">Colonia o Fraccionamiento:</label>
-    <input list="colonias" id="ubicacion" name="ubicacion" required>
-    <datalist id="colonias"></datalist>
+                <fieldset>
+                    <legend>Ubicación del reporte</legend>
+                    <label for="ubicacion">Colonia o Fraccionamiento:</label>
+                    <input list="colonias" id="ubicacion" name="ubicacion" required>
+                    <datalist id="colonias"></datalist>
 
-<label for="calle">Calle principal:</label>
-<input list="callesList" id="calle" name="calle" required>
-<datalist id="callesList"></datalist>
+                    <label for="calle">Calle principal:</label>
+                    <input list="callesList" id="calle" name="calle" required>
+                    <datalist id="callesList"></datalist>
 
-    <label for="entreCalles">Entre qué calles:</label>
-    <input list="entreCalles" id="entreCalles" name="entreCalles" required>
+                    <label for="entreCalles">Entre qué calles:</label>
+                    <input list="entreCalles" id="entreCalles" name="entreCalles" required>
 
-    <label for="CodigoPostal">Código Postal: (Opcional)</label>
-<input list="codigosPostales" id="CodigoPostal" name="CodigoPostal" required readonly>
-<datalist id="codigosPostales"></datalist>
+                    <label for="CodigoPostal">Código Postal: (Opcional)</label>
+                    <input list="codigosPostales" id="CodigoPostal" name="CodigoPostal">
+                    <datalist id="codigosPostales"></datalist>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Detalles del reporte</legend>
+                    <label for="Pregunta">¿Tiene varias luminarias defectuosas?</label>
+                    <select id="Pregunta" name="Pregunta" required>
+                        <option value="" disabled selected>Seleccione una opción</option>
+                        <option value="Sí">Sí</option>
+                        <option value="No">No</option>
+                    </select>
+
+                    <label for="Cantidad">Cantidad de luminarias defectuosas:</label>
+                    <input type="number" id="Cantidad" name="Cantidad" min="1" required>
+
+                    <label for="Tiempo">Tiempo que han estado defectuosas:</label>
+                    <input type="text" id="Tiempo" name="Tiempo" required>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Características de la falla</legend>
+                    <label for="PosibleFalla">Posible Falla:</label>
+                    <input list="fallasList" id="PosibleFalla" name="PosibleFalla" required>
+                    <datalist id="fallasList"></datalist>
+
+                    <label for="ES">Estado de la luminaria:</label>
+                    <select id="ES" name="ES" required>
+                        <option value="" disabled selected>Seleccione una opción</option>
+                        <option value="Sin daños">Sin daños</option>
+                        <option value="Quebrada">Quebrada</option>
+                        <option value="Rota">Rota</option>
+                        <option value="Quemada">Quemada</option>
+                        <option value="No hay luminaria">No hay luminaria</option>
+                        <option value="Poste esta dañado">Poste está dañado</option>
+                        <option value="Desconocida">Desconocida</option>
+                    </select>
+
+                    <label for="descripcion">Descripción de la falla: (Opcional)</label>
+                    <textarea id="descripcion" name="descripcion"></textarea>
+                </fieldset>
+
+                <button type="submit">Enviar reporte</button>
+            </form>
+
+             <body>
+  <button id="btnFolio">Ingrese folio</button>
+
+  <div id="folioForm" style="display:none;">
+  <input type="text" id="folioInput" placeholder="Número de folio">
+  <button id="btnEnviar">Enviar</button>
+</div>
+
+<div id="resultado"></div>
+
+<script>
+  const btnFolio = document.getElementById("btnFolio");
+  const folioForm = document.getElementById("folioForm");
+  const btnEnviar = document.getElementById("btnEnviar");
+  const resultado = document.getElementById("resultado");
+
+  btnFolio.addEventListener("click", () => {
+    folioForm.style.display = "block";
+  });
+
+  btnEnviar.addEventListener("click", async () => {
+    const folio = document.getElementById("folioInput").value;
+
+    const response = await fetch("http://localhost:3000/api/reportes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ folio })
+    });
+
+    const data = await response.json();
+
+    // Mostrar ficha con nombre + folio + concluido
+    const ficha = document.createElement("div");
+    ficha.innerHTML = `<strong>Reporte:</strong> ${data.nombre}<br>
+                       <strong>Folio:</strong> ${data.folio}<br>
+                       <strong>Estado:</strong> Concluido ✅`;
+    resultado.appendChild(ficha);
+
+    alert(data.message);
+  });
+</script>
 
 
-  </fieldset>
 
-  <fieldset>
-
-    <legend>Detalles del reporte</legend>
-    <label for="Pregunta">¿Tiene varias luminarias defectuosas?</label>
-    <select id="Pregunta" name="Pregunta" required>
-      <option value="" disabled selected>Seleccione una opción</option>
-      <option value="Sí">Sí</option>
-      <option value="No">No</option>
-    </select>
-
-    <label for="Cantidad">Cantidad de luminarias defectuosas:</label>
-    <input type="number" id="Cantidad" name="Cantidad" min="1" required>
-
-    <label for="Tiempo">Tiempo que han estado defectuosas:</label>
-    <input type="text" id="Tiempo" name="Tiempo" required>
-  </fieldset>
-
-  <fieldset>
-
-    <legend>Características de la falla</legend>
-
-    <label for="PosibleFalla">Posible Falla:</label>
-    <input list="fallasList" id="PosibleFalla" name="PosibleFalla" required>
-    <datalist id="fallasList"></datalist>
-
-    <label for="ES">Estado de la luminaria:</label>
-    <select id="ES" name="ES" required>
-      <option value="" disabled selected>Seleccione una opción</option>
-      <option value="Sin daños">Sin daños</option>
-      <option value="Quebrada">Quebrada</option>
-      <option value="Rota">Rota</option>
-      <option value="Quemada">Quemada</option>
-      <option value="No hay luminaria">No hay luminaria</option>
-      <option value="Poste esta dañado">Poste está dañado</option>
-      <option value="Desconocida">Desconocida</option>
-    </select>
-
-    <label for="descripcion">Descripción de la falla: (Opcional)</label>
-    <textarea id="descripcion" name="descripcion"></textarea>
-
-  </fieldset>
-
-  <button type="submit">Enviar reporte</button>
-
-      </form>
+</body>
+</html>
 
 <div style="text-align:center; margin-top: 20px;">
   <button class="boton-rojo" onclick="mostrarMapa()">Acceder al mapa de luminarias</button>
 </div id ="Información del reporte" style="color:red; font-weight:bold; text-align:center; margin-top:20px;"><div>
 </div>  
-
-      <section class="imagen-add">
-  <img src="Alumbrado.jpg" alt="Imagen de Alumbrado" class="imagen-add-logo">
-</section>
 
         </section>
 <section id="mapa" style="display:none;">

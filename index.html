@@ -42,6 +42,10 @@
 
                     <label for="Telefono">Teléfono:</label>
                     <input type="tel" id="Telefono" name="Telefono" required>
+
+                     <label for="CodigoPostal">Código Postal: (Opcional)</label>
+                    <input list="codigosPostales" id="CodigoPostal" name="CodigoPostal">
+                    <datalist id="codigosPostales"></datalist>
                 </fieldset>
 
                 <fieldset>
@@ -54,12 +58,14 @@
                     <input list="callesList" id="calle" name="calle" required>
                     <datalist id="callesList"></datalist>
 
-                    <label for="entreCalles">Entre qué calles:</label>
-                    <input list="entreCalles" id="entreCalles" name="entreCalles" required>
+                    <label for="entreCalles">¿Entre qué calles? Primera calle:</label>
+                    <input list="callesList" id="entreCalles" name="entreCalles" required>
+                    <datalist id="callesList"></datalist>
 
-                    <label for="CodigoPostal">Código Postal: (Opcional)</label>
-                    <input list="codigosPostales" id="CodigoPostal" name="CodigoPostal">
-                    <datalist id="codigosPostales"></datalist>
+                    <label for="SegundaCalle">Segunda calle:</label>
+                    <input list="callesList" id="SegundaCalle" name="SegundaCalle">
+                    <datalist id="callesList"></datalist>
+
                 </fieldset>
 
                 <fieldset>
@@ -494,4 +500,5 @@ function limpiarCircuitos() {
 </script>
 </body>
 </html>
+
 
